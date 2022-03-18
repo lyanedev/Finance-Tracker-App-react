@@ -1,37 +1,30 @@
 import { useState } from "react";
 
 import { StyledFormContainer, StyledSignupButton } from "./Signup.styled";
+import { useSignup } from "../../hooks/useSignup";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [firstname, setFirstname] = useState("")
-  const [lastname, setLastname] = useState("");
+  const [displayName, setDisplayName] = useState("");
+
+  const { signup, isLoading, error } = useSignup();
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log(firstname, lastname, email, password);
+    signup(email, password, displayName);
   };
 
   return (
     <StyledFormContainer onSubmit={handleSubmit}>
       <h3>Logout</h3>
       <label>
-        <span>Firstname:</span>
+        <span>Username:</span>
         <input
           type="text"
-          onChange={(e) => setFirstname(e.target.value)}
-          value={firstname}
-          required
-        />
-      </label>
-      <label>
-        <span>Lastname:</span>
-        <input
-          type="text"
-          onChange={(e) => setLastname(e.target.value)}
-          value={lastname}
+          onChange={(e) => setDisplayName(e.target.value)}
+          value={displayName}
           required
         />
       </label>
@@ -53,7 +46,11 @@ const Signup = () => {
           required
         />
       </label>
-      <StyledSignupButton>Let's go!</StyledSignupButton>
+      {!isLoading && <StyledSignupButton>Let's go!</StyledSignupButton>}
+      {isLoading && (
+        <StyledSignupButton disabled>Loading...</StyledSignupButton>
+      )}
+      {error && <p>{error}</p>}
     </StyledFormContainer>
   );
 };
